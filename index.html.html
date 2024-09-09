@@ -1,0 +1,407 @@
+<html><head><base href="https://websim.io/real-estate/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reserva Imobiliária - Empreendimento Luxuoso</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .overlay {
+        background-color: rgba(255, 255, 255, 0.85);
+        min-height: 100vh;
+        padding: 20px;
+    }
+    h1, h2, h3 {
+        text-align: center;
+        color: #1a3c6e;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 30px;
+    }
+    .towers-container {
+        display: flex;
+        justify-content: space-around;
+        max-width: 1400px;
+        margin: 0 auto;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .tower {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 45%;
+    }
+    .floor {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+    .floor-title {
+        font-weight: bold;
+        margin-bottom: 5px;
+        background-color: #1a3c6e;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 15px;
+        width: 100%;
+        text-align: center;
+    }
+    .units-row {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    .unit {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .unit:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+    }
+    .available {
+        background-color: #4CAF50;
+    }
+    .sold {
+        background-color: #F44336;
+    }
+    .reserved {
+        background-color: #FF9800;
+    }
+    .legend {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin: 0 20px;
+    }
+    .legend-color {
+        width: 25px;
+        height: 25px;
+        margin-right: 10px;
+        border-radius: 5px;
+    }
+    #login-form, #admin-panel {
+        max-width: 350px;
+        margin: 20px auto;
+        padding: 25px;
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    #login-form input, #admin-panel input, #admin-panel textarea {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    #login-form button, #admin-panel button {
+        width: 100%;
+        padding: 12px;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    #login-form button:hover, #admin-panel button:hover {
+        opacity: 0.9;
+    }
+    #admin-panel {
+        display: none;
+    }
+    #status-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+    #status-buttons button {
+        flex: 1;
+        margin: 0 5px;
+        padding: 10px;
+    }
+    #btn-available {
+        background-color: #4CAF50;
+    }
+    #btn-reserved {
+        background-color: #FF9800;
+    }
+    #btn-sold {
+        background-color: #F44336;
+    }
+    #logout-btn {
+        background-color: #2196F3;
+        margin-top: 15px;
+    }
+    #update-btn {
+        background-color: #9C27B0;
+        margin-top: 15px;
+    }
+    #create-user-btn {
+        background-color: #009688;
+        margin-top: 15px;
+    }
+    #access-log {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    #access-log h3 {
+        margin-top: 0;
+    }
+</style>
+</head>
+<body>
+<div class="overlay">
+    <h1>Empreendimento Luxuoso - 100 Unidades</h1>
+    <div id="login-form">
+        <h2>Login de Administrador</h2>
+        <input type="text" id="username" placeholder="Usuário">
+        <input type="password" id="password" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
+    </div>
+    <div id="admin-panel">
+        <h2>Painel de Administração</h2>
+        <div id="status-buttons">
+            <button id="btn-available" onclick="changeStatus('available')">Disponível</button>
+            <button id="btn-reserved" onclick="changeStatus('reserved')">Reservado</button>
+            <button id="btn-sold" onclick="changeStatus('sold')">Vendido</button>
+        </div>
+        <input type="text" id="unit-number" placeholder="Novo número da unidade">
+        <textarea id="unit-observation" placeholder="Observações"></textarea>
+        <button id="update-btn" onclick="updateUnit()">Atualizar Unidade</button>
+        <button id="create-user-btn" onclick="showCreateUserForm()">Criar Novo Usuário</button>
+        <button id="logout-btn" onclick="logout()">Sair</button>
+        <div id="access-log">
+            <h3>Log de Acesso</h3>
+            <ul id="access-log-list"></ul>
+        </div>
+    </div>
+    <div class="towers-container">
+        <div class="tower">
+            <h3>Torre 1</h3>
+            <div id="tower1-container"></div>
+        </div>
+        <div class="tower">
+            <h3>Torre 2</h3>
+            <div id="tower2-container"></div>
+        </div>
+    </div>
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color available"></div>
+            <span>Disponível</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color sold"></div>
+            <span>Vendido</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color reserved"></div>
+            <span>Reservado</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const tower1Container = document.getElementById('tower1-container');
+    const tower2Container = document.getElementById('tower2-container');
+    const statusClasses = ['available', 'sold', 'reserved'];
+    let isAdmin = false;
+    let selectedUnit = null;
+    let currentUser = null;
+    let users = [
+        { username: 'ruanfelipe', password: 'tack123', isAdmin: true }
+    ];
+    let accessLog = [];
+
+    function createUnit(number) {
+        const unit = document.createElement('div');
+        unit.className = 'unit available';
+        unit.textContent = number;
+        unit.setAttribute('data-original-number', number);
+        unit.addEventListener('click', selectUnit);
+        return unit;
+    }
+
+    function createFloor(floorNumber, startUnit, endUnit, container) {
+        const floor = document.createElement('div');
+        floor.className = 'floor';
+        
+        const floorTitle = document.createElement('div');
+        floorTitle.className = 'floor-title';
+        floorTitle.textContent = `${floorNumber}º andar`;
+        floor.appendChild(floorTitle);
+
+        const unitsRow = document.createElement('div');
+        unitsRow.className = 'units-row';
+
+        for (let i = startUnit; i <= endUnit; i++) {
+            unitsRow.appendChild(createUnit(i));
+        }
+
+        floor.appendChild(unitsRow);
+        container.appendChild(floor);
+    }
+
+    // Create Tower 1
+    for (let i = 0; i < 13; i++) {
+        createFloor(13 - i, i * 4 + 1, i * 4 + 4, tower1Container);
+    }
+
+    // Create Tower 2
+    for (let i = 0; i < 13; i++) {
+        createFloor(13 - i, i * 4 + 51, i * 4 + 54, tower2Container);
+    }
+
+    function selectUnit() {
+        if (isAdmin) {
+            if (selectedUnit) {
+                selectedUnit.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+            }
+            this.style.boxShadow = '0 0 0 3px #1a3c6e, 0 4px 6px rgba(0,0,0,0.1)';
+            selectedUnit = this;
+            document.getElementById('unit-observation').value = this.getAttribute('data-observation') || '';
+            document.getElementById('unit-number').value = this.textContent;
+        }
+    }
+
+    function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const user = users.find(u => u.username === username && u.password === password);
+        if (user) {
+            isAdmin = user.isAdmin;
+            currentUser = username;
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+            alert('Login bem-sucedido!');
+            addToAccessLog(username);
+            updateAccessLogDisplay();
+        } else {
+            alert('Usuário ou senha incorretos.');
+        }
+    }
+
+    function logout() {
+        isAdmin = false;
+        currentUser = null;
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('admin-panel').style.display = 'none';
+        if (selectedUnit) {
+            selectedUnit.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+            selectedUnit = null;
+        }
+    }
+
+    function changeStatus(status) {
+        if (selectedUnit) {
+            selectedUnit.className = `unit ${status}`;
+        } else {
+            alert('Por favor, selecione uma unidade para atualizar o status.');
+        }
+    }
+
+    function updateUnit() {
+        if (selectedUnit) {
+            const newNumber = document.getElementById('unit-number').value;
+            const observation = document.getElementById('unit-observation').value;
+            
+            if (newNumber && !isNaN(newNumber)) {
+                selectedUnit.textContent = newNumber;
+            } else {
+                alert('Por favor, insira um número válido para a unidade.');
+                return;
+            }
+            
+            selectedUnit.setAttribute('data-observation', observation);
+            selectedUnit.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+            selectedUnit = null;
+            document.getElementById('unit-observation').value = '';
+            document.getElementById('unit-number').value = '';
+            alert('Unidade atualizada com sucesso!');
+        } else {
+            alert('Por favor, selecione uma unidade para atualizar.');
+        }
+    }
+
+    function showCreateUserForm() {
+        if (currentUser === 'ruanfelipe') {
+            const newUsername = prompt('Digite o nome de usuário para o novo administrador:');
+            if (newUsername) {
+                const newPassword = prompt('Digite a senha para o novo administrador:');
+                if (newPassword) {
+                    createNewUser(newUsername, newPassword);
+                }
+            }
+        } else {
+            alert('Apenas o usuário principal (ruanfelipe) pode criar novos usuários administrativos.');
+        }
+    }
+
+    function createNewUser(username, password) {
+        if (users.some(u => u.username === username)) {
+            alert('Este nome de usuário já existe. Por favor, escolha outro.');
+        } else {
+            users.push({ username, password, isAdmin: true });
+            alert(`Novo usuário administrativo "${username}" criado com sucesso!`);
+        }
+    }
+
+    function addToAccessLog(username) {
+        const now = new Date();
+        accessLog.unshift(`${username} - ${now.toLocaleString()}`);
+        if (accessLog.length > 10) {
+            accessLog.pop();
+        }
+    }
+
+    function updateAccessLogDisplay() {
+        const logList = document.getElementById('access-log-list');
+        logList.innerHTML = '';
+        accessLog.forEach(entry => {
+            const li = document.createElement('li');
+            li.textContent = entry;
+            logList.appendChild(li);
+        });
+    }
+</script>
+</body>
+</html>
